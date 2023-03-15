@@ -11,7 +11,8 @@ import SwiftUI
 struct XcodeGPTApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            HomeView()
+                .frame(minWidth: 600, minHeight: 500)
         }
     }
 }

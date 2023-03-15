@@ -13,7 +13,7 @@ import OpenAIKit
 class SourceEditorCommand: NSObject, XCSourceEditorCommand {
 
     static let httpClient = HTTPClient(eventLoopGroupProvider: .createNew)
-    let configuration = Configuration(apiKey: "", organization: "")
+    let configuration = Configuration(apiKey: "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", organization: "")
     
     func perform(with invocation: XCSourceEditorCommandInvocation, completionHandler: @escaping (Error?) -> Void ) -> Void {
         
@@ -30,7 +30,7 @@ class SourceEditorCommand: NSObject, XCSourceEditorCommand {
                 let prompts = ["A linguagem de programação usada é Swift. \(prompt)"]
                 
                 let completion = try await openAIClient.completions.create(
-                    model: Model.GPT3.textDavinci002,
+                    model: Model.GPT3.textDavinci003,
                     prompts: prompts,
                     maxTokens: 2048,
                     temperature: 0.5
