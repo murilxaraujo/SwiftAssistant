@@ -31,6 +31,9 @@ struct HomeView: View {
                          iconName: "key",
                          description: viewModel.token ?? "Pendente",
                          iconColor: viewModel.token != nil ? .green : .red)
+                .onTapGesture {
+                    viewModel.isPresentingToken = true
+                }
                 MenuCard(title: "Model", iconName: "shippingbox.fill", description: "DaVinci003")
                 MenuCard(title: "Treinar", iconName: "figure.strengthtraining.functional", description: "Em breve...")
             }
@@ -44,6 +47,11 @@ struct HomeView: View {
             }.opacity(0.5)
                 .padding()
         }.navigationTitle("SwiftAssistant")
+            .sheet(isPresented: $viewModel.isPresentingToken, onDismiss: {
+                viewModel.getData()
+            }, content: {
+                TokenView(isShowing: $viewModel.isPresentingToken)
+            })
             .onAppear {
                 viewModel.getData()
             }

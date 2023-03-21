@@ -10,6 +10,7 @@ import SwiftAssistantCore
 
 class HomeViewModel: ObservableObject {
     @Published var token: String?
+    @Published var isPresentingToken = false
     
     private let tokenManager = TokenManager()
     

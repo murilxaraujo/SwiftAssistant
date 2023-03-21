@@ -9,11 +9,18 @@ import AsyncHTTPClient
 import Foundation
 import XcodeKit
 import OpenAIKit
+import SwiftAssistantCore
+
+
+enum SAErrors: Error {
+    case tokenMissing
+}
 
 class SourceEditorCommand: NSObject, XCSourceEditorCommand {
-
+    
     static let httpClient = HTTPClient(eventLoopGroupProvider: .createNew)
-    let configuration = Configuration(apiKey: "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", organization: "")
+
+    let tokenManager = TokenManager()
     
     func perform(with invocation: XCSourceEditorCommandInvocation, completionHandler: @escaping (Error?) -> Void ) -> Void {
         
@@ -23,7 +30,17 @@ class SourceEditorCommand: NSObject, XCSourceEditorCommand {
             return "\(line)"
         }.joined(separator: "\n")
 
+        guard let token = tokenManager.getToken() else {
+            completionHandler(SAErrors.tokenMissing)
+            return
+        }
+        
+        let configuration = Configuration(apiKey: token, organization: "")
+        
         let openAIClient = OpenAIKit.Client(httpClient: SourceEditorCommand.httpClient, configuration: configuration)
+        
+        lines.removeAllObjects()
+        lines.addObjects(from: ["// Gerando resposta"])
         
         Task {
             do {
