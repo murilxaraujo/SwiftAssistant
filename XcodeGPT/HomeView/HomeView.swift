@@ -34,7 +34,7 @@ struct HomeView: View {
                 .onTapGesture {
                     viewModel.isPresentingToken = true
                 }
-                MenuCard(title: "Model", iconName: "shippingbox.fill", description: "DaVinci003")
+                MenuCard(title: "Model", iconName: "shippingbox.fill", description: "GPT3.5-Turbo")
                 MenuCard(title: "Treinar", iconName: "figure.strengthtraining.functional", description: "Em breve...")
             }
             Spacer()

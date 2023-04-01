@@ -39,23 +39,11 @@ class SourceEditorCommand: NSObject, XCSourceEditorCommand {
         
         let openAIClient = OpenAIKit.Client(httpClient: SourceEditorCommand.httpClient, configuration: configuration)
         
-        lines.removeAllObjects()
-        lines.addObjects(from: ["// Gerando resposta"])
-        
         Task {
             do {
-                let prompts = ["A linguagem de programação usada é Swift. \(prompt)"]
+                let modelEngine = getModelEngine(withClient: openAIClient)
                 
-                let completion = try await openAIClient.completions.create(
-                    model: Model.GPT3.textDavinci003,
-                    prompts: prompts,
-                    maxTokens: 2048,
-                    temperature: 0.5
-                )
-                
-                let resultText = completion.choices.map { choice in
-                    choice.text
-                }
+                let resultText = try await modelEngine.getResponse(from: prompt)
                 
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                     lines.removeAllObjects()
@@ -66,5 +54,9 @@ class SourceEditorCommand: NSObject, XCSourceEditorCommand {
                 completionHandler(error)
             }
         }
+    }
+    
+    func getModelEngine(withClient client: OpenAIKit.Client) -> ModelEngine {
+        return GPT3dot5TurboEngine(openAIClient: client)
     }
 }
