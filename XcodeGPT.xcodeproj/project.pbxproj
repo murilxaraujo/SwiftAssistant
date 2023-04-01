@@ -23,6 +23,8 @@
 		4B58CCBE29BE2FB100CEAE59 /* OpenAIKit in Frameworks */ = {isa = PBXBuildFile; productRef = 4B58CCBD29BE2FB100CEAE59 /* OpenAIKit */; };
 		4B58CCBF29BE3E7900CEAE59 /* XcodeKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B58CCAC29BE2DBE00CEAE59 /* XcodeKit.framework */; };
 		4B58CCC029BE3E7900CEAE59 /* XcodeKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 4B58CCAC29BE2DBE00CEAE59 /* XcodeKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		4B703B1B29D891E300A29AB3 /* ModelEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B703B1929D891DC00A29AB3 /* ModelEngine.swift */; };
+		4B703B1F29D892DB00A29AB3 /* GPT3dot5TurboEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B703B1C29D892C100A29AB3 /* GPT3dot5TurboEngine.swift */; };
 		4B80408D29C157CC00522386 /* MenuCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B80408C29C157CC00522386 /* MenuCard.swift */; };
 		4B80409729C167A300522386 /* SwiftAssistantCore.docc in Sources */ = {isa = PBXBuildFile; fileRef = 4B80409629C167A300522386 /* SwiftAssistantCore.docc */; };
 		4B80409D29C167A300522386 /* SwiftAssistantCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B80409329C167A300522386 /* SwiftAssistantCore.framework */; };
@@ -140,6 +142,8 @@
 		4B58CCB129BE2DBE00CEAE59 /* SourceEditorCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SourceEditorCommand.swift; sourceTree = "<group>"; };
 		4B58CCB329BE2DBE00CEAE59 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4B58CCB429BE2DBE00CEAE59 /* XGPT.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = XGPT.entitlements; sourceTree = "<group>"; };
+		4B703B1929D891DC00A29AB3 /* ModelEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelEngine.swift; sourceTree = "<group>"; };
+		4B703B1C29D892C100A29AB3 /* GPT3dot5TurboEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GPT3dot5TurboEngine.swift; sourceTree = "<group>"; };
 		4B80408C29C157CC00522386 /* MenuCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuCard.swift; sourceTree = "<group>"; };
 		4B80409329C167A300522386 /* SwiftAssistantCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SwiftAssistantCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4B80409529C167A300522386 /* SwiftAssistantCore.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SwiftAssistantCore.h; sourceTree = "<group>"; };
@@ -290,12 +294,22 @@
 		4B58CCAE29BE2DBE00CEAE59 /* XGPT */ = {
 			isa = PBXGroup;
 			children = (
+				4B703B1829D891BD00A29AB3 /* Engines */,
 				4B58CCAF29BE2DBE00CEAE59 /* SourceEditorExtension.swift */,
 				4B58CCB129BE2DBE00CEAE59 /* SourceEditorCommand.swift */,
 				4B58CCB329BE2DBE00CEAE59 /* Info.plist */,
 				4B58CCB429BE2DBE00CEAE59 /* XGPT.entitlements */,
 			);
 			path = XGPT;
+			sourceTree = "<group>";
+		};
+		4B703B1829D891BD00A29AB3 /* Engines */ = {
+			isa = PBXGroup;
+			children = (
+				4B703B1929D891DC00A29AB3 /* ModelEngine.swift */,
+				4B703B1C29D892C100A29AB3 /* GPT3dot5TurboEngine.swift */,
+			);
+			path = Engines;
 			sourceTree = "<group>";
 		};
 		4B80409429C167A300522386 /* SwiftAssistantCore */ = {
@@ -603,7 +617,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4B703B1F29D892DB00A29AB3 /* GPT3dot5TurboEngine.swift in Sources */,
 				4B58CCB029BE2DBE00CEAE59 /* SourceEditorExtension.swift in Sources */,
+				4B703B1B29D891E300A29AB3 /* ModelEngine.swift in Sources */,
 				4B58CCB229BE2DBE00CEAE59 /* SourceEditorCommand.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -800,7 +816,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = dev.muriloaraujo.XcodeGPT;
 				PRODUCT_NAME = "Swift Assistant";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -831,7 +847,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = dev.muriloaraujo.XcodeGPT;
 				PRODUCT_NAME = "Swift Assistant";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -929,7 +945,7 @@
 					"@executable_path/../Frameworks",
 					"@executable_path/../../../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = dev.muriloaraujo.XcodeGPT.XGPT;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -956,7 +972,7 @@
 					"@executable_path/../Frameworks",
 					"@executable_path/../../../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = dev.muriloaraujo.XcodeGPT.XGPT;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;

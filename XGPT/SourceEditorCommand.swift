@@ -24,11 +24,7 @@ class SourceEditorCommand: NSObject, XCSourceEditorCommand {
     
     func perform(with invocation: XCSourceEditorCommandInvocation, completionHandler: @escaping (Error?) -> Void ) -> Void {
         
-        let lines = invocation.buffer.lines
-        
-        let prompt = invocation.buffer.lines.map { line in
-            return "\(line)"
-        }.joined(separator: "\n")
+        let prompt = getInput(for: invocation)
 
         guard let token = tokenManager.getToken() else {
             completionHandler(SAErrors.tokenMissing)
@@ -39,32 +35,64 @@ class SourceEditorCommand: NSObject, XCSourceEditorCommand {
         
         let openAIClient = OpenAIKit.Client(httpClient: SourceEditorCommand.httpClient, configuration: configuration)
         
-        lines.removeAllObjects()
-        lines.addObjects(from: ["// Gerando resposta"])
-        
         Task {
             do {
-                let prompts = ["A linguagem de programação usada é Swift. \(prompt)"]
+                let modelEngine = getModelEngine(withClient: openAIClient)
                 
-                let completion = try await openAIClient.completions.create(
-                    model: Model.GPT3.textDavinci003,
-                    prompts: prompts,
-                    maxTokens: 2048,
-                    temperature: 0.5
-                )
+                let resultText = try await modelEngine.getResponse(from: prompt)
                 
-                let resultText = completion.choices.map { choice in
-                    choice.text
-                }
-                
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                    lines.removeAllObjects()
-                    lines.addObjects(from: resultText)
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [self] in
+                    placeOutput(for: invocation, and: resultText)
                     completionHandler(nil)
                 }
             } catch let error {
                 completionHandler(error)
             }
         }
+    }
+    
+    func getInput(for invocation: XCSourceEditorCommandInvocation) -> String {
+        if let firstSelection = invocation.buffer.selections.firstObject as? XCSourceTextRange,
+           let lastSelection = invocation.buffer.selections.lastObject as? XCSourceTextRange {
+            guard firstSelection.start.line < lastSelection.end.line else {
+                return "\(invocation.buffer.lines[firstSelection.start.line])"
+            }
+            
+            var selectedLines = ""
+            
+            for index in firstSelection.start.line...lastSelection.end.line {
+                selectedLines += "\(invocation.buffer.lines[index])\n"
+            }
+            
+            return selectedLines
+        } else {
+            return invocation.buffer.lines.map { line in
+                return "\(line)"
+            }.joined(separator: "\n")
+        }
+    }
+    
+    func placeOutput(for invocation: XCSourceEditorCommandInvocation, and output: [String]) {
+        if let firstSelection = invocation.buffer.selections.firstObject as? XCSourceTextRange,
+           let lastSelection = invocation.buffer.selections.lastObject as? XCSourceTextRange {
+            if firstSelection.start.line < lastSelection.end.line {
+                invocation.buffer.lines.removeObject(at: firstSelection.start.line)
+            } else {
+                for index in firstSelection.start.line...lastSelection.end.line {
+                    invocation.buffer.lines.removeObject(at: index)
+                }
+            }
+            
+            output.reversed().forEach { outputLine in
+                invocation.buffer.lines.insert(outputLine, at: firstSelection.start.line)
+            }
+        } else {
+            invocation.buffer.lines.removeAllObjects()
+            invocation.buffer.lines.addObjects(from: output)
+        }
+    }
+    
+    func getModelEngine(withClient client: OpenAIKit.Client) -> ModelEngine {
+        return GPT3dot5TurboEngine(openAIClient: client)
     }
 }
